@@ -110,10 +110,6 @@ echo $text;
 ```php
 $whisper = new Whisper();
 
-// Simple and direct
-echo $whisper->audio('/path/to/audio-1.mp3')->toText();
-
-// Combine multiple options
 $result = $whisper
     ->audio('/path/to/audio-2.mp3')
     ->fromLanguage('pt')    // Audio language to increase accuracy
