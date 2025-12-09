@@ -21,6 +21,7 @@ A powerful, standalone PHP library that brings state-of-the-art speech recogniti
 - 🔄 Real-time progress tracking
 - 🎨 Fluent Laravel-style API
 - 🔒 Privacy-first (all processing happens locally)
+- 🧪 Real tests ([see here](examples/example-models.php))
 
 ---
 
@@ -102,6 +103,34 @@ $whisper = new Whisper();
 // Simple transcription
 $text = $whisper->audio('/path/to/audio.mp3')->toText();
 echo $text;
+```
+
+### Chaining Multiple Options
+
+```php
+$whisper = new Whisper();
+
+// Simple and direct
+echo $whisper->audio('/path/to/audio-1.mp3')->toText();
+
+// Combine multiple options
+$result = $whisper
+    ->audio('/path/to/audio-2.mp3')
+    ->fromLanguage('pt')    // Audio language to increase accuracy
+    ->toEnglish()           // Translate any language to English
+    ->improveDecode(5)      // Improved decoding algorithm (1-10)
+    ->filterNonSpeech(0.5)  // Detects speech vs silence/noise (0-1)
+    ->detectSpeakers()      // Detects different speakers
+    ->context('Add context and technical terms to improve accuracy')
+    ->onProgress(fn($p) => echo "{$p}%\n") // Real-time progress
+    ->run();
+
+echo $result->detectedLanguage();  // Auto‑detects language
+print_r($result->segments()); // Array: text, timestamps, speakers 
+
+echo $result->toText(); // Pure text
+echo $result->toJson(); // or: toJson(true), toCsv, toVtt, toSrt
+$result->saveTo('/path/to/output.srt'); // Save directly to file (auto detects format)
 ```
 
 ## Switching Models
@@ -425,34 +454,6 @@ $text = $whisper->audio('/path/to/long-audio.mp3')
 - Updating job status in queues
 - Logging progress for long-running tasks
 - Providing user feedback during processing
-
-### Chaining Multiple Options
-
-```php
-$whisper = new Whisper();
-
-// Simple and direct
-echo $whisper->audio('/path/to/audio-1.mp3')->toText();
-
-// Combine multiple options
-$result = $whisper
-    ->audio('/path/to/audio-2.mp3')
-    ->fromLanguage('pt')    // Audio language to increase accuracy
-    ->toEnglish()           // Translate any language to English
-    ->improveDecode(5)      // Improved decoding algorithm (1-10)
-    ->filterNonSpeech(0.5)  // Detects speech vs silence/noise (0-1)
-    ->detectSpeakers()      // Detects different speakers
-    ->context('Add context and technical terms to improve accuracy')
-    ->onProgress(fn($p) => echo "{$p}%\n") // Real-time progress
-    ->run();
-
-echo $result->detectedLanguage();  // Auto‑detects language
-print_r($result->segments()); // Array: text, timestamps, speakers 
-
-echo $result->toText(); // Pure text
-echo $result->toJson(); // or: toJson(true), toCsv, toVtt, toSrt
-$result->saveTo('/path/to/output.srt'); // Save directly to file (auto detects format)
-```
 
 ## Available Models
 
